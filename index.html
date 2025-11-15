@@ -1,69 +1,86 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Тест по спортивной психологии</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>Колесо спортивного баланса</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<div id="container">
+<div id="app">
   <div class="app-card">
 
-    <div class="app-header">
-      <div class="app-title">Колесо спортивного баланса</div>
-      <div class="app-tag">спорт · психология</div>
-    </div>
+    <header class="app-header">
+      <div>
+        <h1 class="app-title">Колесо спортивного баланса</h1>
+        <p class="app-subtitle">Психологическая готовность спортсмена</p>
+      </div>
+      <span class="app-tag">спорт · психология</span>
+    </header>
 
-    <!-- WELCOME -->
-    <div id="welcome">
-      <h1>Добро пожаловать!</h1>
-      <p>Этот тест оценивает восемь ключевых компонентов вашей психологической готовности к спорту.</p>
-      <p>Оцените каждое утверждение по шкале от 1 до 10, где 1 — совсем не про меня, 10 — полностью про меня.</p>
-      <button onclick="startTest()">Начать тест</button>
-    </div>
+    <!-- WELCOME SCREEN -->
+    <section id="welcome">
+      <p class="intro-text">
+        Этот тест помогает оценить восемь ключевых психологических компонентов,
+        влияющих на стабильность спортивных результатов.
+      </p>
+      <p class="intro-text">
+        Оценивайте каждое утверждение по шкале от <b>1</b> до <b>10</b>, где
+        1 — совсем не про меня, 10 — полностью про меня.
+      </p>
+      <button class="primary-btn" onclick="startTest()">Пройти тест бесплатно</button>
+    </section>
 
-    <!-- TEST -->
-    <div id="test" class="hidden">
-      <div id="progress-wrapper">
+    <!-- TEST SCREEN -->
+    <section id="test" class="hidden">
+      <div class="progress-wrapper">
         <div id="progress-bar"></div>
       </div>
 
-      <div id="question-card">
-        <div class="question-topline">
+      <div class="question-card glass">
+        <div class="question-top">
           <span id="counter"></span>
-          <span>Оцените по шкале 1–10</span>
+          <span class="hint">Оцените по шкале 1–10</span>
         </div>
-
-        <div id="question"></div>
+        <p id="question"></p>
 
         <input type="range" min="1" max="10" value="5" id="slider" oninput="updateValue()">
-        <div id="value">Оценка: 5</div>
+        <div id="value" class="slider-value">Оценка: 5</div>
 
-        <button onclick="nextQuestion()">Далее</button>
+        <button class="primary-btn" onclick="nextQuestion()">Далее</button>
       </div>
-    </div>
+    </section>
 
-    <!-- RESULT -->
-    <div id="result" class="hidden">
+    <!-- RESULT SCREEN -->
+    <section id="result" class="hidden">
       <div class="result-layout">
-        <div class="summary-card">
-          <div class="summary-title">Уровень психологической готовности</div>
-          <div class="summary-percent" id="overall-percent">0%</div>
-          <div class="summary-chip" id="overall-label"></div>
-          <p style="margin-top:12px;color:#cbd5f5;font-size:14px;">
-            Показатель отражает совокупность навыков: мотивации, самооценки, восстановления,
-            эмоциональной стабильности и готовности к соревнованиям.
+        <div class="summary glass">
+          <h2>Общий уровень психологической готовности</h2>
+          <div class="summary-main">
+            <div id="overall-percent" class="summary-percent">0%</div>
+            <div id="overall-label" class="summary-label"></div>
+          </div>
+          <p class="summary-text">
+            Показатель отражает сбалансированность ключевых ментальных компонентов,
+            влияющих на стабильность спортивных результатов.
           </p>
+          <div class="ios-card">
+            <div id="overall-text"></div>
+          </div>
+          <div class="ios-card weak-card" id="weak-areas"></div>
         </div>
-        <div>
+
+        <div class="chart-card glass">
+          <h3>Профиль по шкалам</h3>
           <canvas id="chart"></canvas>
         </div>
       </div>
 
-      <div id="recs"></div>
-    </div>
+      <div id="scales-descriptions" class="scales-block"></div>
+
+      <button class="primary-btn" onclick="location.reload()">Пройти ещё раз</button>
+    </section>
 
   </div>
 </div>

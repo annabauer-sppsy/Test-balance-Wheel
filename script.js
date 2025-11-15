@@ -1,126 +1,330 @@
 
-const questions = [{"text": "Я знаю, каких целей хочу добиться в спорте — ближайших и на будущее.", "category": "Цели", "reverse": false}, {"text": "Я верю, что мои способности подходят для моего вида спорта.", "category": "Уверенность", "reverse": false}, {"text": "Я быстро прихожу в себя после физических и эмоциональных нагрузок.", "category": "Восстановление", "reverse": false}, {"text": "Я продолжаю тренироваться, даже когда не хочется.", "category": "Мотивация", "reverse": false}, {"text": "Я чувствую, что сейчас в хорошей физической форме.", "category": "Физическая форма", "reverse": false}, {"text": "Я часто ошибаюсь на соревнованиях из-за волнения.", "category": "Соревнования", "reverse": true}, {"text": "Я чувствую, что тренер верит в меня.", "category": "Тренер", "reverse": false}, {"text": "Я часто думаю о том, что могу проиграть.", "category": "Эмоции", "reverse": true}, {"text": "Я понимаю, какие шаги мне нужно делать, чтобы достичь своих целей.", "category": "Цели", "reverse": false}, {"text": "Я думаю, что соперники могут влиять на мой результат.", "category": "Уверенность", "reverse": true}, {"text": "Я использую разные способы, чтобы расслабиться и восстановить силы после тренировок.", "category": "Восстановление", "reverse": false}, {"text": "Я придерживаюсь своего режима и мне это даётся легко.", "category": "Мотивация", "reverse": false}, {"text": "Я легко выдерживаю объём и темп тренировок, которые даёт тренер.", "category": "Физическая форма", "reverse": false}, {"text": "Я умею успокаивать себя, когда начинаю волноваться.", "category": "Соревнования", "reverse": false}, {"text": "Я могу открыто говорить тренеру о своих сложностях.", "category": "Тренер", "reverse": false}, {"text": "Когда я волнуюсь, у меня может что-то заболеть, затошнить или скрутить живот.", "category": "Эмоции", "reverse": true}, {"text": "Я ставлю себе реальные и достижимые спортивные цели.", "category": "Цели", "reverse": false}, {"text": "Я считаю, что проигрыш — это опыт и возможность стать лучше.", "category": "Уверенность", "reverse": false}, {"text": "Я умею собраться и настроиться перед соревнованиями.", "category": "Восстановление", "reverse": false}, {"text": "Я хочу развиваться и становиться лучше в спорте.", "category": "Мотивация", "reverse": false}, {"text": "Я редко травмируюсь и хорошо выдерживаю нагрузки.", "category": "Физическая форма", "reverse": false}, {"text": "Я часто плохо сплю перед соревнованиями.", "category": "Соревнования", "reverse": true}, {"text": "Между мной и тренером есть доверие и уважение.", "category": "Тренер", "reverse": false}, {"text": "Мне мешают страхи — например, что могу ошибиться, получить травму или подвести команду.", "category": "Эмоции", "reverse": true}, {"text": "Я слежу за своим прогрессом и меняю план, если это нужно.", "category": "Цели", "reverse": false}, {"text": "Я думаю, что если проиграю, то мне не захочется пробовать снова.", "category": "Уверенность", "reverse": true}, {"text": "Я часто устаю, напрягаюсь или «перегораю» ещё до старта.", "category": "Восстановление", "reverse": true}, {"text": "Иногда я думаю о том, чтобы бросить спорт.", "category": "Мотивация", "reverse": true}, {"text": "Мне часто не хватает сил, чтобы выполнить тренировку до конца.", "category": "Физическая форма", "reverse": true}, {"text": "На важных соревнованиях я сильнее теряюсь и хуже справляюсь с собой.", "category": "Соревнования", "reverse": true}, {"text": "Я чувствую, что тренер часто мной недоволен.", "category": "Тренер", "reverse": true}, {"text": "Я часто раздражаюсь или злюсь, и это мешает мне в спорте.", "category": "Эмоции", "reverse": true}];
-const categoriesFull = {"Цели": "Цели и планирование", "Уверенность": "Самооценка и уверенность", "Восстановление": "Восстановление (релаксация и активация)", "Мотивация": "Мотивация и дисциплина", "Физическая форма": "Физическая подготовленность", "Соревнования": "Соревновательная готовность", "Тренер": "Отношения с тренером", "Эмоции": "Эмоциональная стабильность"};
+// --- ВОПРОСЫ ---
 
-// текстовая оценка общего процента
-function getOverallLabel(percent) {
-    if (percent < 40) return "Низкий уровень психологической готовности";
-    if (percent < 70) return "Средний уровень психологической готовности";
-    return "Высокий уровень психологической готовности";
-}
+const questions = [
+  // цикл 1
+  {text:"Я знаю, каких целей хочу добиться в спорте — ближайших и на будущее.", cat:"Цели и планирование", short:"Цели", reverse:false},
+  {text:"Я верю, что мои способности подходят для моего вида спорта.", cat:"Самооценка и уверенность", short:"Уверенность", reverse:false},
+  {text:"Я быстро прихожу в себя после физических и эмоциональных нагрузок.", cat:"Восстановление", short:"Восстановление", reverse:false},
+  {text:"Я продолжаю тренироваться, даже когда не хочется.", cat:"Мотивация и дисциплина", short:"Мотивация", reverse:false},
+  {text:"Я чувствую, что сейчас в хорошей физической форме.", cat:"Физическая подготовка", short:"Физическая", reverse:false},
+  {text:"Я часто ошибаюсь на соревнованиях из-за волнения.", cat:"Соревновательная готовность", short:"Соревнования", reverse:true},
+  {text:"Я чувствую, что тренер верит в меня.", cat:"Отношения с тренером", short:"Тренер", reverse:false},
+  {text:"Я часто думаю о том, что могу проиграть.", cat:"Эмоциональная стабильность", short:"Эмоции", reverse:true},
 
-// рекомендации по отдельной шкале
-function getRecommendation(score) {
-    if (score < 4) {
-        return "Низкий уровень. Есть выраженные трудности в этой сфере. Стоит осознанно уделить ей больше внимания и при необходимости подключить поддержку специалиста.";
-    } else if (score < 7) {
-        return "Средний уровень. Базовые навыки сформированы, но есть зоны роста. Важно работать над стабильностью и регулярностью, чтобы превратить эту область в опору.";
-    } else {
-        return "Высокий уровень. Эта сфера является вашей сильной стороной. Продолжайте поддерживать её, не перегружая себя, и используйте как ресурс в сложные моменты.";
-    }
-}
+  // цикл 2
+  {text:"Я понимаю, какие шаги мне нужно делать, чтобы достичь своих целей.", cat:"Цели и планирование", short:"Цели", reverse:false},
+  {text:"Я думаю, что соперники могут влиять на мой результат.", cat:"Самооценка и уверенность", short:"Уверенность", reverse:true},
+  {text:"Я использую разные способы, чтобы расслабиться и восстановить силы после тренировок.", cat:"Восстановление", short:"Восстановление", reverse:false},
+  {text:"Я придерживаюсь своего режима и мне это даётся легко.", cat:"Мотивация и дисциплина", short:"Мотивация", reverse:false},
+  {text:"Я легко выдерживаю объём и темп тренировок, которые даёт тренер.", cat:"Физическая подготовка", short:"Физическая", reverse:false},
+  {text:"Я умею успокаивать себя, когда начинаю волноваться.", cat:"Соревновательная готовность", short:"Соревнования", reverse:false},
+  {text:"Я могу открыто говорить тренеру о своих сложностях.", cat:"Отношения с тренером", short:"Тренер", reverse:false},
+  {text:"Когда я волнуюсь, у меня может что-то заболеть, затошнить или скрутить живот.", cat:"Эмоциональная стабильность", short:"Эмоции", reverse:true},
+
+  // цикл 3
+  {text:"Я ставлю себе реальные и достижимые спортивные цели.", cat:"Цели и планирование", short:"Цели", reverse:false},
+  {text:"Я считаю, что проигрыш — это опыт и возможность стать лучше.", cat:"Самооценка и уверенность", short:"Уверенность", reverse:false},
+  {text:"Я умею собраться и настроиться перед соревнованиями.", cat:"Восстановление", short:"Восстановление", reverse:false},
+  {text:"Я хочу развиваться и становиться лучше в спорте.", cat:"Мотивация и дисциплина", short:"Мотивация", reverse:false},
+  {text:"Я редко травмируюсь и хорошо выдерживаю нагрузки.", cat:"Физическая подготовка", short:"Физическая", reverse:false},
+  {text:"Я часто плохо сплю перед соревнованиями.", cat:"Соревновательная готовность", short:"Соревнования", reverse:true},
+  {text:"Между мной и тренером есть доверие и уважение.", cat:"Отношения с тренером", short:"Тренер", reverse:false},
+  {text:"Мне мешают страхи — например, что могу ошибиться, получить травму или подвести команду.", cat:"Эмоциональная стабильность", short:"Эмоции", reverse:true},
+
+  // цикл 4
+  {text:"Я слежу за своим прогрессом и меняю план, если это нужно.", cat:"Цели и планирование", short:"Цели", reverse:false},
+  {text:"Я думаю, что если проиграю, то мне не захочется пробовать снова.", cat:"Самооценка и уверенность", short:"Уверенность", reverse:true},
+  {text:"Я часто устаю, напрягаюсь или «перегораю» ещё до старта.", cat:"Восстановление", short:"Восстановление", reverse:true},
+  {text:"Иногда я думаю о том, чтобы бросить спорт.", cat:"Мотивация и дисциплина", short:"Мотивация", reverse:true},
+  {text:"Мне часто не хватает сил, чтобы выполнить тренировку до конца.", cat:"Физическая подготовка", short:"Физическая", reverse:true},
+  {text:"На важных соревнованиях я сильнее теряюсь и хуже справляюсь с собой.", cat:"Соревновательная готовность", short:"Соревнования", reverse:true},
+  {text:"Я чувствую, что тренер часто мной недоволен.", cat:"Отношения с тренером", short:"Тренер", reverse:true},
+  {text:"Я часто раздражаюсь или злюсь, и это мешает мне в спорте.", cat:"Эмоциональная стабильность", short:"Эмоции", reverse:true},
+];
 
 let index = 0;
 let answers = [];
 
-function startTest() {
-    document.getElementById("welcome").classList.add("hidden");
-    document.getElementById("test").classList.remove("hidden");
-    document.getElementById("slider").value = 5;
-    updateValue();
+// --- Старт ---
+
+function startTest(){
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("test").classList.remove("hidden");
+  document.getElementById("slider").value = 5;
+  updateValue();
+  loadQuestion();
+}
+
+function loadQuestion(){
+  const q = questions[index];
+  document.getElementById("counter").innerText = `Вопрос ${index+1} из ${questions.length}`;
+  document.getElementById("question").innerText = q.text;
+  document.getElementById("slider").value = 5;
+  updateValue();
+  document.getElementById("progress-bar").style.width =
+    ((index) / questions.length * 100) + "%";
+}
+
+function updateValue(){
+  const v = Number(document.getElementById("slider").value);
+  document.getElementById("value").innerText = "Оценка: " + v;
+}
+
+function nextQuestion(){
+  const raw = Number(document.getElementById("slider").value);
+  const q = questions[index];
+  const score = q.reverse ? (11 - raw) : raw; // реверсия
+  answers.push({cat:q.cat, short:q.short, score});
+
+  index++;
+  if(index >= questions.length){
+    showResults();
+  } else {
     loadQuestion();
+  }
 }
 
-function loadQuestion() {
-    const q = questions[index];
-    document.getElementById("question").innerText = q.text;
-    document.getElementById("counter").innerText = `Вопрос ${index + 1} из ${questions.length}`;
-    document.getElementById("progress-bar").style.width = (index / questions.length * 100) + "%";
-}
+// --- Результаты ---
 
-function updateValue() {
-    const v = document.getElementById("slider").value;
-    document.getElementById("value").innerText = "Оценка: " + v;
-}
+function showResults(){
+  document.getElementById("test").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
 
-function nextQuestion() {
-    const raw = Number(document.getElementById("slider").value);
-    const q = questions[index];
-    const finalScore = q.reverse ? (11 - raw) : raw;
+  // Группируем по категориям
+  const grouped = {};
+  answers.forEach(a=>{
+    if(!grouped[a.cat]) grouped[a.cat] = [];
+    grouped[a.cat].push(a.score);
+  });
 
-    answers.push({ category: q.category, score: finalScore });
-    index++;
+  const fullCats = [
+    "Цели и планирование",
+    "Самооценка и уверенность",
+    "Восстановление",
+    "Мотивация и дисциплина",
+    "Физическая подготовка",
+    "Соревновательная готовность",
+    "Отношения с тренером",
+    "Эмоциональная стабильность"
+  ];
 
-    if (index < questions.length) {
-        document.getElementById("slider").value = 5;
-        updateValue();
-        loadQuestion();
-    } else {
-        showResults();
-    }
-}
+  const shortCats = ["Цели","Уверенность","Восстановление","Мотивация","Физическая","Соревнования","Тренер","Эмоции"];
 
-function showResults() {
-    document.getElementById("test").classList.add("hidden");
-    document.getElementById("result").classList.remove("hidden");
+  const data = [];
+  const percentsByCat = {};
 
-    const grouped = {};
-    answers.forEach(a => {
-        if (!grouped[a.category]) grouped[a.category] = [];
-        grouped[a.category].push(a.score);
-    });
+  fullCats.forEach(cat=>{
+    const arr = grouped[cat] || [0,0,0,0];
+    const avg = arr.reduce((s,v)=>s+v,0) / arr.length;
+    const percent = Math.round(avg/10*100);
+    data.push(percent);
+    percentsByCat[cat] = percent;
+  });
 
-    const categoryKeys = Object.keys(grouped);
-    const labels = categoryKeys.map(k => categoriesFull[k]);
-    const data = categoryKeys.map(k => {
-        const arr = grouped[k];
-        return arr.reduce((s,v)=>s+v,0) / arr.length;
-    });
+  // Общий процент
+  const overall = Math.round(data.reduce((s,v)=>s+v,0)/data.length);
+  document.getElementById("overall-percent").innerText = overall + "%";
+  document.getElementById("overall-label").innerText = getOverallLabel(overall);
+  document.getElementById("overall-text").innerText = getOverallText(overall);
 
-    const overallRaw = data.reduce((s,v)=>s+v,0) / data.length;
-    const overallPercent = Math.round(overallRaw * 10);
+  // Слабые области
+  const sortedCats = [...fullCats].sort((a,b)=>percentsByCat[a]-percentsByCat[b]);
+  const weakest = sortedCats.slice(0,2).filter(c=>percentsByCat[c] < 75);
+  const weakBlock = document.getElementById("weak-areas");
+  if(weakest.length === 0){
+    weakBlock.innerText = "Сейчас нет ярко выраженных слабых сфер — профиль достаточно сбалансирован.";
+  } else {
+    weakBlock.innerHTML = "<b>Зоны, которые стоит усилить:</b><br>" +
+      weakest.map(c=>`${c.toLowerCase()} (${percentsByCat[c]}%)`).join("<br>");
+  }
 
-    document.getElementById("overall-percent").innerText = overallPercent + "%";
-    document.getElementById("overall-label").innerText = getOverallLabel(overallPercent);
-
-    new Chart(document.getElementById("chart"), {
-        type: "radar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Профиль по шкалам",
-                data: data,
-                borderColor: "#60a5fa",
-                backgroundColor: "rgba(37,99,235,0.25)",
-                borderWidth: 2,
-                pointRadius: 3
-            }]
-        },
-        options: {
-            scales: {
-                r: {
-                    min: 0,
-                    max: 10,
-                    ticks: { stepSize: 2, color: "#9ca3af" },
-                    grid: { color: "rgba(148,163,184,0.5)" },
-                    angleLines: { color: "rgba(148,163,184,0.5)" }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: "#e5e7eb" }
-                }
-            }
+  // График
+  const ctx = document.getElementById("chart");
+  new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: shortCats,
+      datasets: [{
+        label: "",
+        data: data,
+        backgroundColor: "rgba(80,150,255,0.28)",
+        borderColor: "rgba(163,191,255,0.95)",
+        borderWidth: 2,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "rgba(15,23,42,1)",
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display:false }
+      },
+      scales: {
+        r: {
+          suggestedMin: 0,
+          suggestedMax: 100,
+          ticks: { display:false },
+          grid: { color:"rgba(148,163,184,0.35)" },
+          angleLines: { color:"rgba(148,163,184,0.35)" },
+          pointLabels: {
+            font: { size: 13 },
+            color: "#e5e7eb"
+          }
         }
-    });
+      }
+    }
+  });
 
-    let recHTML = "<h2>Рекомендации по шкалам</h2>";
-    labels.forEach((label, i) => {
-        const percent = Math.round(data[i] * 10);
-        recHTML += "<div class='rec-item'><b>" + label +
-            " — <span class='percent'>" + percent + "%</span></b><br>" +
-            getRecommendation(data[i]) + "</div>";
-    });
+  // Описания по шкалам
+  renderScaleDescriptions(percentsByCat);
+}
 
-    document.getElementById("recs").innerHTML = recHTML;
+// --- Общий уровень ---
+
+function getOverallLabel(p){
+  if(p < 40) return "Низкий уровень психологической готовности";
+  if(p < 70) return "Средний уровень психологической готовности";
+  return "Высокий уровень психологической готовности";
+}
+
+function getOverallText(p){
+  if(p < 40) {
+    return "Психологические навыки развиты неравномерно, есть выраженные зоны риска. Важно мягко усилить базовые компоненты, чтобы снизить влияние стресса и нестабильности на результаты.";
+  } else if(p < 70) {
+    return "Фундамент психологической готовности сформирован, но есть слабые звенья. Усиление отдельных компонентов поможет сделать выступления более стабильными.";
+  } else {
+    return "Психологическая готовность хорошо сформирована и поддерживает спортивный рост. Прицельная работа с отдельными навыками поможет выйти на ещё более высокий уровень.";
+  }
+}
+
+// --- Описания по шкалам ---
+
+function renderScaleDescriptions(percentsByCat){
+  const container = document.getElementById("scales-descriptions");
+  container.innerHTML = "<h3>Профиль по каждому компоненту</h3>";
+
+  Object.keys(percentsByCat).forEach(cat=>{
+    const p = percentsByCat[cat];
+    container.innerHTML += getScaleDescription(cat, p);
+  });
+}
+
+// Профессиональные описания по шкалам
+function getScaleDescription(category, percent) {
+    let level = "";
+    let text = "";
+
+    if (percent <= 24) level = "Очень низкий уровень";
+    else if (percent <= 49) level = "Ниже среднего";
+    else if (percent <= 74) level = "Хороший уровень";
+    else level = "Высокий уровень";
+
+    switch (category) {
+
+        case "Цели и планирование":
+            if (percent <= 24) {
+                text = "Стратегическое и тактическое планирование практически отсутствует. Недостаточно ясности в целях и путях их достижения, что снижает устойчивость мотивации и делает тренировочный процесс хаотичным.";
+            } else if (percent <= 49) {
+                text = "Цели формулируются непоследовательно. План может нарушаться или меняться без анализа. Сложно удерживать фокус и отслеживать прогресс.";
+            } else if (percent <= 74) {
+                text = "Цели достаточно чёткие, присутствует понимание шагов и способов контроля прогресса. Система планирования работает, но требует большей регулярности.";
+            } else {
+                text = "Сформирована ясная стратегия, цели реалистичны и мотивирующие. Планирование устойчивое и эффективное, регулярная корректировка курса налажена.";
+            }
+            break;
+
+        case "Самооценка и уверенность":
+            if (percent <= 24) {
+                text = "Наблюдается выраженная неуверенность, зависимость от мнения соперников и результатов. Самооценка нестабильна и снижает качество выступлений.";
+            } else if (percent <= 49) {
+                text = "Уверенность нестабильна, легко падает под давлением. Возможны сомнения в собственных способностях и страх ошибок.";
+            } else if (percent <= 74) {
+                text = "Уверенность в целом устойчива, но снижается в стрессовых условиях. Самооценка адекватная, присутствует готовность учиться.";
+            } else {
+                text = "Сформирована зрелая уверенность и устойчивость к давлению. Спортсмен эффективно использует опыт и сохраняет внутреннюю стабильность.";
+            }
+            break;
+
+        case "Восстановление":
+            if (percent <= 24) {
+                text = "Высокий риск переутомления и эмоционального выгорания. Недостаточно навыков расслабления и регулирования уровня активации.";
+            } else if (percent <= 49) {
+                text = "Восстановление неполноценное или нерегулярное. Возможны трудности в возвращении к оптимальному состоянию после нагрузок.";
+            } else if (percent <= 74) {
+                text = "Навыки восстановления достаточно хорошие, но нестабильные. Под сильным стрессом методы могут работать хуже.";
+            } else {
+                text = "Высокая способность управлять состоянием. Эффективная релаксация, контроль напряжения и быстрое восстановление.";
+            }
+            break;
+
+        case "Мотивация и дисциплина":
+            if (percent <= 24) {
+                text = "Мотивация сильно колеблется, дисциплина слабая. Трудно поддерживать тренировки без внешнего контроля, высок риск отказа от целей.";
+            } else if (percent <= 49) {
+                text = "Мотивация есть, но нестабильная. Дисциплина зависит от настроения и поддержки извне.";
+            } else if (percent <= 74) {
+                text = "Хороший уровень мотивации и дисциплины. Бывают моменты спада, но спортсмен умеет возвращаться к режиму.";
+            } else {
+                text = "Стойкая внутренняя мотивация и высокая самодисциплина. Чёткий режим и готовность продолжать даже при трудностях.";
+            }
+            break;
+
+        case "Физическая подготовка":
+            if (percent <= 24) {
+                text = "Серьезные трудности в выполнении нагрузок, высокий риск усталости и травм. Не хватает выносливости и силы.";
+            } else if (percent <= 49) {
+                text = "Форма нестабильная. Иногда сложно выдерживать темп и объём тренировок.";
+            } else if (percent <= 74) {
+                text = "Хорошая физическая форма. Спортсмен справляется с нагрузками, но есть зоны для усиления.";
+            } else {
+                text = "Отличная физическая подготовка. Спортсмен устойчив к нагрузкам, редко устаёт и демонстрирует высокий функциональный уровень.";
+            }
+            break;
+
+        case "Соревновательная готовность":
+            if (percent <= 24) {
+                text = "Страх ошибок и сильное напряжение мешают реализации потенциала. Волнение нарушает технику и принятие решений.";
+            } else if (percent <= 49) {
+                text = "Стресс перед стартом заметно влияет на результат. Возможна потеря контроля в напряжённых ситуациях.";
+            } else if (percent <= 74) {
+                text = "Хороший уровень управления волнением. Эмоции присутствуют, но чаще всего не мешают выступлению.";
+            } else {
+                text = "Сильная соревновательная устойчивость. Стресс используется как ресурс, сохраняется фокус и качество исполнения.";
+            }
+            break;
+
+        case "Отношения с тренером":
+            if (percent <= 24) {
+                text = "Коммуникация напряжённая, много недоверия, возможно избегание обсуждений и страх критики.";
+            } else if (percent <= 49) {
+                text = "Отношения неоднородные: присутствуют и доверие, и сомнения. Не всегда получается открыто обсуждать трудности.";
+            } else if (percent <= 74) {
+                text = "Хорошее рабочее взаимодействие. Общение открытое, бывают отдельные эпизоды недопонимания.";
+            } else {
+                text = "Высокий уровень доверия, уважения и партнёрства. Коммуникация поддерживающая и эффективная.";
+            }
+            break;
+
+        case "Эмоциональная стабильность":
+            if (percent <= 24) {
+                text = "Эмоциональные реакции сильные и плохо управляемые. Частые страхи, сомнения и раздражительность снижают качество выступлений.";
+            } else if (percent <= 49) {
+                text = "Эмоции периодически выходят из-под контроля. Это влияет на результаты и тренировочный процесс.";
+            } else if (percent <= 74) {
+                text = "Хорошая эмоциональная устойчивость. Реакции есть, но чаще всего контролируемы.";
+            } else {
+                text = "Высокая стабильность и стрессоустойчивость. Спортсмен сохраняет фокус даже в напряжённых ситуациях.";
+            }
+            break;
+    }
+
+    return `
+        <div class="ios-card">
+            <b>${category}</b><br>
+            <span style="color:#9db7ff;">Уровень: ${level} (${percent}%)</span>
+            <p style="margin-top:6px;color:#dfe7ff;">${text}</p>
+        </div>
+    `;
 }
