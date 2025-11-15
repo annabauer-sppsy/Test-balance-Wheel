@@ -1,37 +1,73 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Колесо спортивного баланса</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Тест по спортивной психологии</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Колесо спортивного баланса</h1>
-    <p class="subtitle">
-      Тест поможет определить уровень вашей психологической готовности, а также выявить сильные стороны и области, требующие внимания.
-    </p>
-    <button id="startButton">Пройти тест бесплатно</button>
-  </div>
+<div id="container">
+  <div class="app-card">
 
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <p>Тест скоро начнётся…</p>
+    <div class="app-header">
+      <div class="app-title">Колесо спортивного баланса</div>
+      <div class="app-tag">спорт · психология</div>
     </div>
-  </div>
 
-  <div id="quiz" class="hidden">
-    <div id="questionContainer"></div>
-    <button id="nextButton">Далее</button>
-  </div>
+    <!-- WELCOME -->
+    <div id="welcome">
+      <h1>Добро пожаловать!</h1>
+      <p>Этот тест оценивает восемь ключевых компонентов вашей психологической готовности к спорту.</p>
+      <p>Оцените каждое утверждение по шкале от 1 до 10, где 1 — совсем не про меня, 10 — полностью про меня.</p>
+      <button onclick="startTest()">Начать тест</button>
+    </div>
 
-  <div id="result" class="hidden">
-    <h2>Ваше колесо спортивного баланса</h2>
-    <canvas id="resultChart" width="300" height="300"></canvas>
-  </div>
+    <!-- TEST -->
+    <div id="test" class="hidden">
+      <div id="progress-wrapper">
+        <div id="progress-bar"></div>
+      </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+      <div id="question-card">
+        <div class="question-topline">
+          <span id="counter"></span>
+          <span>Оцените по шкале 1–10</span>
+        </div>
+
+        <div id="question"></div>
+
+        <input type="range" min="1" max="10" value="5" id="slider" oninput="updateValue()">
+        <div id="value">Оценка: 5</div>
+
+        <button onclick="nextQuestion()">Далее</button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result" class="hidden">
+      <div class="result-layout">
+        <div class="summary-card">
+          <div class="summary-title">Уровень психологической готовности</div>
+          <div class="summary-percent" id="overall-percent">0%</div>
+          <div class="summary-chip" id="overall-label"></div>
+          <p style="margin-top:12px;color:#cbd5f5;font-size:14px;">
+            Показатель отражает совокупность навыков: мотивации, самооценки, восстановления,
+            эмоциональной стабильности и готовности к соревнованиям.
+          </p>
+        </div>
+        <div>
+          <canvas id="chart"></canvas>
+        </div>
+      </div>
+
+      <div id="recs"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
