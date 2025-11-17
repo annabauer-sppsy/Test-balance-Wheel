@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Колесо спортивного баланса</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <div class="app-card">
+
+    <header class="app-header">
+      <div>
+        <h1 class="app-title">Колесо спортивного баланса</h1>
+        <p class="app-subtitle">Психологическая готовность спортсмена</p>
+      </div>
+      <span class="app-tag">спорт · психология</span>
+    </header>
+
+    <!-- WELCOME SCREEN -->
+    <section id="welcome">
+      <p class="intro-text">
+        Тест поможет определить уровень вашей психологической готовности, а также выявить сильные стороны и области, требующие внимания. Он основан на принципе взаимосвязи компонентов, влияющих на спортивные результаты и внутреннее состояние спортсмена.
+      </p>
+      <p class="intro-text">
+        Оценивайте каждое утверждение по шкале от <b>1</b> до <b>10</b>, где
+        1 — совсем не про меня, 10 — полностью про меня.
+      </p>
+      <button class="primary-btn" onclick="startTest()">Пройти тест бесплатно</button>
+    </section>
+
+    <!-- TEST SCREEN -->
+    <section id="test" class="hidden">
+      <div class="progress-wrapper">
+        <div id="progress-bar"></div>
+      </div>
+
+      <div class="question-card glass">
+        <div class="question-top">
+          <span id="counter"></span>
+          <span class="hint">Оцените по шкале 1–10</span>
+        </div>
+        <p id="question"></p>
+
+        <input type="range" min="1" max="10" value="5" id="slider" oninput="updateValue()">
+        <div id="value" class="slider-value">Оценка: 5</div>
+
+        <button class="primary-btn" onclick="nextQuestion()">Далее</button>
+      </div>
+    </section>
+
+    <!-- RESULT SCREEN -->
+    <section id="result" class="hidden">
+      <div class="result-layout">
+        <div class="summary glass">
+          <h2>Общий уровень психологической готовности</h2>
+          <div class="summary-main">
+            <div id="overall-percent" class="summary-percent">0%</div>
+            <div id="overall-label" class="summary-label"></div>
+          </div>
+          <p class="summary-text">
+            Показатель, отражающий сбалансированность ключевых компонентов, которые напрямую влияют на стабильность спортивных результатов.
+          </p>
+          <div class="ios-card">
+            <div id="overall-text"></div>
+          </div>
+          <div class="ios-card weak-card" id="weak-areas"></div>
+        </div>
+
+        <div class="chart-card glass">
+          <h3>Профиль по шкалам</h3>
+          <div class="chart-wrapper">
+            <canvas id="chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="scales-descriptions" class="scales-block"></div>
+
+  <div class="buttons-row">
+    <button class="secondary-btn" id="getPdf" onclick="openDeliveryModal()">Скачать PDF</button>
+    <button class="primary-btn" id="smart-btn">Что делать дальше?</button>
+    <button class="secondary-btn" onclick="openMaterials()">Посмотреть полезные материалы</button>
+
+   <button class="share-minimal" onclick="shareResults()">
+    <span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" 
+             viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 7l3-3 3 3"/>
+            <path d="M10 4v9"/>
+            <rect x="4" y="9" width="12" height="9" rx="2"/>
+        </svg>
+    </span>
+    Поделиться
+</button>
+</div>
+    </section>
+
+    <!-- MODAL OVERLAY & WINDOW -->
+    <div id="modal-overlay" class="modal-overlay hidden"></div>
+    <div id="delivery-modal" class="modal-window hidden">
+      <div class="modal-content glass">
+        <h3>Как получить PDF-отчёт?</h3>
+        <p class="modal-text">Выберите удобный способ и укажите контакт.</p>
+
+        <div class="modal-options">
+          <label class="option-row">
+            <input type="radio" name="delivery" value="telegram" checked onchange="toggleDeliveryFields()">
+            <span>Telegram</span>
+          </label>
+          <label class="option-row">
+            <input type="radio" name="delivery" value="email" onchange="toggleDeliveryFields()">
+            <span>Email</span>
+          </label>
+        </div>
+
+        <div id="telegram-field" class="field-block">
+          <label>@username в Telegram</label>
+          <input type="text" id="tg-username" placeholder="@example">
+        </div>
+
+        <div id="email-field" class="field-block hidden">
+          <label>Ваш e-mail</label>
+          <input type="email" id="email-input" placeholder="name@example.com">
+        </div>
+
+        <div class="modal-buttons">
+          <button class="secondary-btn" onclick="closeDeliveryModal()">Отмена</button>
+          <button class="primary-btn" onclick="submitDelivery()">Получить PDF</button>
+        </div>
+
+        <p class="modal-note">Сейчас используется тестовый режим. Отправка в Telegram и на почту будет настроена позже.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
