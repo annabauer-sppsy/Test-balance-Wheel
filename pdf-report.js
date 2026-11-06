@@ -2,13 +2,15 @@
 (function () {
   'use strict';
   const BG = [9, 18, 39], CARD = [24, 38, 75], TEXT = [230, 238, 255], MUTED = [158, 183, 243], ACCENT = [112, 164, 255];
+  const GREEN = [103, 219, 163], ORANGE = [246, 181, 95], GREEN_CARD = [21, 52, 57], ORANGE_CARD = [60, 43, 40];
   const W = 210, H = 297, M = 15, CONTENT = W - 2 * M;
   const plain = el => (el ? (el.innerText || el.textContent || '').trim() : '');
   function parseCards() {
     return Array.from(document.querySelectorAll('#scales-descriptions .ios-card')).map(el => ({
       title: plain(el.querySelector('b')),
       level: plain(el.querySelector('span')),
-      text: plain(el.querySelector('p'))
+      text: plain(el.querySelector('p')),
+      percent: Number((plain(el.querySelector('span')).match(/(\d+)\s*%/) || [])[1] || 0)
     }));
   }
   function buildPdf() {
@@ -55,7 +57,10 @@
       pdf.text(lines,M,y+size*.33);
       y+=lines.length*size*.52+5;
     }
-    function card(title, level, body, index) {
+    function card(title, level, body, index, percent) {
+      const attention = percent <= 53;
+      const tone = attention ? ORANGE : GREEN;
+      const cardBg = attention ? ORANGE_CARD : GREEN_CARD;
       const pad = 9, x = M, width = CONTENT;
       const titleLines = measure(title, 13, width - 2*pad - 4);
       const levelLines = measure(level, 9.5, width - 2*pad);
@@ -67,16 +72,16 @@
       if (y + height > H - 25) newPage();
       // Keep every card together where it fits on an A4 page.
       if (height > H - 2*M - 12) throw new Error('Описание компонента слишком длинное для одной страницы');
-      pdf.setFillColor(...CARD);
-      pdf.setDrawColor(53, 78, 133);
+      pdf.setFillColor(...cardBg);
+      pdf.setDrawColor(...tone);
       pdf.roundedRect(x, y, width, height, 4, 4, 'FD');
-      pdf.setFillColor(...ACCENT);
+      pdf.setFillColor(...tone);
       pdf.roundedRect(x, y+5, 1.5, height-10, .6, .6, 'F');
       let cy = y + 11;
       pdf.setFontSize(13); pdf.setTextColor(...TEXT);
       pdf.text(titleLines, x+pad, cy);
       cy += titleH + 2;
-      pdf.setFontSize(9.5); pdf.setTextColor(...ACCENT);
+      pdf.setFontSize(9.5); pdf.setTextColor(...tone);
       pdf.text(levelLines, x+pad, cy);
       cy += levelH + 4;
       pdf.setDrawColor(48, 69, 112);
@@ -92,15 +97,17 @@
         'Тест носит ознакомительный характер, не является полноценной психологической диагностикой и не заменяет индивидуальную работу со спортивным психологом.',
         'Для более точной оценки необходимо учитывать возраст спортсмена, особенности вида спорта, уровень подготовки, соревновательный опыт и другие индивидуальные факторы.'
       ];
-      const lines = paragraphs.map(t => measure(t, 9, CONTENT-20));
-      const height = 21 + lines.reduce((sum, a) => sum + a.length*5.1+5, 0);
-      if (y+height>H-25) newPage();
-      pdf.setFillColor(19, 34, 67); pdf.setDrawColor(64, 94, 151);
-      pdf.roundedRect(M,y,CONTENT,height,4,4,'FD');
-      let cy=y+12;
-      pdf.setFontSize(13);pdf.setTextColor(...ACCENT);pdf.text('Важно знать',M+9,cy);
+      const lineGroups = paragraphs.map(t => measure(t, 9, CONTENT-12));
+      const height = 25 + lineGroups.reduce((sum, a) => sum + a.length*5.1+5, 0);
+      if (y + height > H-25) newPage();
+      pdf.setDrawColor(87, 109, 146);
+      pdf.line(M, y+2, W-M, y+2);
+      let cy=y+14;
+      pdf.setFontSize(8);pdf.setTextColor(...MUTED);pdf.text('О МЕТОДИКЕ',M,cy);
+      cy+=9;
+      pdf.setFontSize(13);pdf.setTextColor(...TEXT);pdf.text('Важно знать',M,cy);
       cy+=10;
-      lines.forEach(a=>{pdf.setFontSize(9);pdf.setTextColor(...TEXT);pdf.text(a,M+9,cy,{lineHeightFactor:1.6});cy+=a.length*5.1+5;});
+      lineGroups.forEach(a=>{pdf.setFontSize(9);pdf.setTextColor(173,187,211);pdf.text(a,M,cy,{lineHeightFactor:1.6});cy+=a.length*5.1+5;});
       y+=height+8;
     }
     newPage();
@@ -130,7 +137,8 @@
     const cards=parseCards();
     if(cards.length!==8) throw new Error('Ожидалось восемь описаний шкал, найдено: '+cards.length);
     newPage(); heading('Профиль по каждому компоненту',17);
-    cards.forEach((c,i)=>card(c.title,c.level,c.text,i));
+    paragraph('Оранжевый — зоны внимания (до 53% включительно). Зелёный — остальные компоненты.',9,MUTED,7);
+    cards.forEach((c,i)=>card(c.title,c.level,c.text,i,c.percent));
     disclaimer();
     pdf.setProperties({title:'Колесо спортивного баланса',author:'Анна Бауэр'});
     return pdf;
