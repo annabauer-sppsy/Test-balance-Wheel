@@ -342,7 +342,7 @@ async function sendResultsByEmail() {
     return;
   }
 
-  const results = document.getElementById("results");
+  const results = document.getElementById("result");
 
   if (!results) {
     alert("Не удалось найти результаты теста");
