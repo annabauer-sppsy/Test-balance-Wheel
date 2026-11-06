@@ -55,35 +55,53 @@
       pdf.text(lines,M,y+size*.33);
       y+=lines.length*size*.52+5;
     }
-    function card(title,level,body) {
-      const lines=measure(body,10,CONTENT-15);
-      const titleLines=measure(title,13,CONTENT-15);
-      const levelLines=measure(level,9,CONTENT-15);
-      const cardH=10+titleLines.length*7+levelLines.length*5+lines.length*5.6+9;
-      if(cardH <= H-2*M-16 && y+cardH>H-26) newPage();
-      // Very long text is split across pages by paragraph(); no content is removed.
-      if(cardH <= H-2*M-16) {
-        pdf.setFillColor(...CARD);pdf.setDrawColor(55,79,139);
-        pdf.roundedRect(M-3,y-4,CONTENT+6,cardH,3,3,'FD');
-      }
-      const oldM = y;
-      pdf.setTextColor(...TEXT);pdf.setFontSize(13);
-      pdf.text(titleLines,M+3,y+3);
-      y+=titleLines.length*7+3;
-      pdf.setTextColor(...MUTED);pdf.setFontSize(9);
-      pdf.text(levelLines,M+3,y+2);
-      y+=levelLines.length*5+5;
-      const x=M+3, width=CONTENT-8, lineH=5.6;
-      let i=0;
-      while(i<lines.length) {
-        if(y>H-29) newPage();
-        const count=Math.max(1,Math.floor((H-25-y)/lineH));
-        const part=lines.slice(i,i+count);
-        pdf.setTextColor(...TEXT);pdf.setFontSize(10);
-        pdf.text(part,x,y+3,{lineHeightFactor:1.59});
-        y+=part.length*lineH;i+=part.length;
-      }
-      y+=12;
+    function card(title, level, body, index) {
+      const pad = 9, x = M, width = CONTENT;
+      const titleLines = measure(title, 13, width - 2*pad - 4);
+      const levelLines = measure(level, 9.5, width - 2*pad);
+      const bodyLines = measure(body, 10, width - 2*pad);
+      const titleH = titleLines.length * 7.2;
+      const levelH = levelLines.length * 5.2;
+      const bodyH = bodyLines.length * 5.7;
+      const height = 13 + titleH + levelH + 7 + bodyH + 10;
+      if (y + height > H - 25) newPage();
+      // Keep every card together where it fits on an A4 page.
+      if (height > H - 2*M - 12) throw new Error('Описание компонента слишком длинное для одной страницы');
+      pdf.setFillColor(...CARD);
+      pdf.setDrawColor(53, 78, 133);
+      pdf.roundedRect(x, y, width, height, 4, 4, 'FD');
+      pdf.setFillColor(...ACCENT);
+      pdf.roundedRect(x, y+5, 1.5, height-10, .6, .6, 'F');
+      let cy = y + 11;
+      pdf.setFontSize(13); pdf.setTextColor(...TEXT);
+      pdf.text(titleLines, x+pad, cy);
+      cy += titleH + 2;
+      pdf.setFontSize(9.5); pdf.setTextColor(...ACCENT);
+      pdf.text(levelLines, x+pad, cy);
+      cy += levelH + 4;
+      pdf.setDrawColor(48, 69, 112);
+      pdf.line(x+pad, cy-2, x+width-pad, cy-2);
+      pdf.setFontSize(10); pdf.setTextColor(...TEXT);
+      pdf.text(bodyLines, x+pad, cy+4, {lineHeightFactor:1.61});
+      y += height + 7;
+    }
+    function disclaimer() {
+      const paragraphs = [
+        '«Колесо спортивного баланса» — инструмент самостоятельной оценки психологических компонентов спортивной деятельности.',
+        'Результаты отражают субъективное восприятие спортсменом своего состояния, навыков и возможностей на момент прохождения теста. Они помогают увидеть сильные стороны и определить области, которым стоит уделить больше внимания.',
+        'Тест носит ознакомительный характер, не является полноценной психологической диагностикой и не заменяет индивидуальную работу со спортивным психологом.',
+        'Для более точной оценки необходимо учитывать возраст спортсмена, особенности вида спорта, уровень подготовки, соревновательный опыт и другие индивидуальные факторы.'
+      ];
+      const lines = paragraphs.map(t => measure(t, 9, CONTENT-20));
+      const height = 21 + lines.reduce((sum, a) => sum + a.length*5.1+5, 0);
+      if (y+height>H-25) newPage();
+      pdf.setFillColor(19, 34, 67); pdf.setDrawColor(64, 94, 151);
+      pdf.roundedRect(M,y,CONTENT,height,4,4,'FD');
+      let cy=y+12;
+      pdf.setFontSize(13);pdf.setTextColor(...ACCENT);pdf.text('Важно знать',M+9,cy);
+      cy+=10;
+      lines.forEach(a=>{pdf.setFontSize(9);pdf.setTextColor(...TEXT);pdf.text(a,M+9,cy,{lineHeightFactor:1.6});cy+=a.length*5.1+5;});
+      y+=height+8;
     }
     newPage();
     heading('Колесо спортивного баланса',19);
@@ -112,7 +130,8 @@
     const cards=parseCards();
     if(cards.length!==8) throw new Error('Ожидалось восемь описаний шкал, найдено: '+cards.length);
     newPage(); heading('Профиль по каждому компоненту',17);
-    cards.forEach(c=>card(c.title,c.level,c.text));
+    cards.forEach((c,i)=>card(c.title,c.level,c.text,i));
+    disclaimer();
     pdf.setProperties({title:'Колесо спортивного баланса',author:'Анна Бауэр'});
     return pdf;
   }
