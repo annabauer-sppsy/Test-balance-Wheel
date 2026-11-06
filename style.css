@@ -505,3 +505,14 @@ input[type=range]::-webkit-slider-thumb {
   .app-card { box-shadow: none !important; backdrop-filter: none !important; }
   * { animation: none !important; transition: none !important; }
 }
+
+/* Ссылки выглядят как кнопки, но не зависят от JavaScript. */
+.buttons-row a.primary-btn, .buttons-row a.secondary-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; box-sizing: border-box; cursor: pointer;
+}
+@media print {
+  #app > .app-card { display: block !important; }
+  #app .app-header, #welcome, #test { display: none !important; }
+  #app #result { display: block !important; }
+}

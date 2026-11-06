@@ -434,14 +434,8 @@ function openMaterials(){
 // ====== УМНАЯ КНОПКА ПОСЛЕ РЕЗУЛЬТАТА ======
 // После прохождения теста открываем страницу с дальнейшими шагами.
 const NEXT_STEPS_URL = 'https://taplink.cc/annabauer/p/11b1d26/';
-function setupSmartButton(percentsByCat, overall){
-  const btn = document.getElementById('smart-btn');
-  if (!btn) return;
-  btn.textContent = 'Что делать дальше?';
-  btn.onclick = function(){
-    const newTab = window.open(NEXT_STEPS_URL, '_blank', 'noopener,noreferrer');
-    if (!newTab) window.location.href = NEXT_STEPS_URL;
-  };
+function setupSmartButton() {
+  // Ссылка задана непосредственно в HTML и работает независимо от JS.
 }
 
 // ====== ПОДЕЛИТЬСЯ РЕЗУЛЬТАТОМ ======
@@ -510,7 +504,12 @@ function printResultsAsPDF() {
   }
   // Print dialog generates a paginated PDF without rendering the entire page to canvas.
   // On iPad: Share the print preview → Save to Files.
-  requestAnimationFrame(() => window.print());
+  requestAnimationFrame(() => {
+    try { window.print(); } catch (error) {
+      console.error('Ошибка системной печати:', error);
+      alert('Не удалось открыть печать. Попробуйте меню Safari → Поделиться → Печать.');
+    }
+  });
 }
 
 async function downloadResultsPDF() {
