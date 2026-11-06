@@ -110,6 +110,39 @@
       lineGroups.forEach(a=>{pdf.setFontSize(9);pdf.setTextColor(173,187,211);pdf.text(a,M,cy,{lineHeightFactor:1.6});cy+=a.length*5.1+5;});
       y+=height+8;
     }
+    function contacts() {
+      newPage();
+      pdf.setFillColor(248, 251, 255);
+      pdf.rect(0, 0, W, H, 'F');
+      pdf.setDrawColor(113, 174, 219);
+      pdf.setLineWidth(0.7);
+      pdf.line(M, 35, W-M, 35);
+      pdf.setTextColor(15, 58, 104);
+      pdf.setFontSize(23);
+      pdf.text('АННА БАУЭР', M, 59);
+      pdf.setFontSize(12);
+      pdf.text('Спортивный психолог', M, 70);
+      pdf.setDrawColor(192, 219, 237);
+      pdf.line(M, 84, W-M, 84);
+      pdf.setFontSize(15);
+      const titleLines = measure('Хотите подробнее разобраться в результатах?', 15, CONTENT);
+      pdf.text(titleLines, M, 104, {lineHeightFactor: 1.45});
+      const start = 104 + titleLines.length * 8.2 + 9;
+      const description = measure('На индивидуальной консультации мы можем обсудить результаты теста и определить направления дальнейшей работы.', 11, CONTENT);
+      pdf.setFontSize(11);
+      pdf.setTextColor(51, 69, 93);
+      pdf.text(description, M, start, {lineHeightFactor: 1.55});
+      const contactY = start + description.length * 7 + 20;
+      pdf.setFontSize(12);
+      pdf.setTextColor(15, 58, 104);
+      pdf.text('annabauer.sportpsy@gmail.com', M, contactY);
+      pdf.text('+7 981 715-10-97', M, contactY + 14);
+      pdf.setDrawColor(192, 219, 237);
+      pdf.line(M, H-27, W-M, H-27);
+      pdf.setFontSize(9);
+      pdf.setTextColor(87, 111, 138);
+      pdf.text('КОЛЕСО СПОРТИВНОГО БАЛАНСА', M, H-20);
+    }
     newPage();
     heading('Колесо спортивного баланса',19);
     paragraph('Психологическая готовность спортсмена',11,MUTED,9);
@@ -127,11 +160,16 @@
         const chartObj = window.Chart && Chart.getChart ? Chart.getChart(chart) : null;
         if(chartObj) { chartObj.stop(); chartObj.update('none'); }
         const img=chart.toDataURL('image/png');
-        const ch=91;
-        if(y+ch>H-25) newPage();
+        // Keep the original canvas aspect ratio; never stretch the wheel.
+        const props=pdf.getImageProperties(img);
+        const maxW=CONTENT-16, maxH=113;
+        const ratio=Math.min(maxW/props.width,maxH/props.height);
+        const drawW=props.width*ratio, drawH=props.height*ratio;
+        if(y+drawH+18>H-25) newPage();
         heading('Профиль по шкалам',14);
-        pdf.addImage(img,'PNG',M+12,y,CONTENT-24,ch-5);
-        y+=ch+5;
+        if(y+drawH>H-25) newPage();
+        pdf.addImage(img,'PNG',(W-drawW)/2,y,drawW,drawH);
+        y+=drawH+8;
       } catch(e) { console.warn('Диаграмма PDF:',e); throw new Error('Не удалось добавить диаграмму'); }
     }
     const cards=parseCards();
@@ -140,6 +178,7 @@
     paragraph('Оранжевый — зоны внимания (до 53% включительно). Зелёный — остальные компоненты.',9,MUTED,7);
     cards.forEach((c,i)=>card(c.title,c.level,c.text,i,c.percent));
     disclaimer();
+    contacts();
     pdf.setProperties({title:'Колесо спортивного баланса',author:'Анна Бауэр'});
     return pdf;
   }
