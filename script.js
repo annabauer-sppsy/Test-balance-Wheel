@@ -327,4 +327,42 @@ function getScaleDescription(category, percent) {
             <p style="margin-top:6px;color:#dfe7ff;">${text}</p>
         </div>
     `;
+  
 }
+
+const EMAIL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUzLY6wndNbX6fcaYCpyIvyhh18ofJIXZzTQlbwOrUbX1tWDzBC4P8DQuHV6AC4b4/exec";
+
+async function sendResultsByEmail() {
+  const email = prompt("Введите вашу электронную почту:");
+
+  if (!email) return;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("Проверьте правильность email");
+    return;
+  }
+
+  const results = document.getElementById("results");
+
+  if (!results) {
+    alert("Не удалось найти результаты теста");
+    return;
+  }
+
+  const data = new URLSearchParams();
+  data.append("email", email);
+  data.append("results", results.innerText);
+
+  try {
+    await fetch(EMAIL_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    });
+
+    alert("Запрос отправлен. Проверьте почту через несколько минут.");
+  } catch (error) {
+    alert("Не удалось отправить запрос. Попробуйте ещё раз.");
+  }
+}
+
