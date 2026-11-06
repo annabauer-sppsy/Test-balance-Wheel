@@ -424,50 +424,23 @@ function submitDelivery(){
 }
 
 
-// ====== КНОПКА «ПОЛЕЗНЫЕ МАТЕРИАЛЫ» (заглушка) ======
+// ====== КНОПКА «ПОЛЕЗНЫЕ МАТЕРИАЛЫ» ======
+const MATERIALS_URL = 'https://taplink.cc/annabauer/p/11b35e7/';
 function openMaterials(){
-  alert("Раздел с полезными материалами появится позже. Вы сможете перейти к статьям и упражнениям из этого окна. 💙");
+  const newTab = window.open(MATERIALS_URL, '_blank', 'noopener,noreferrer');
+  if (!newTab) window.location.href = MATERIALS_URL;
 }
 
 // ====== УМНАЯ КНОПКА ПОСЛЕ РЕЗУЛЬТАТА ======
+// После прохождения теста открываем страницу с дальнейшими шагами.
+const NEXT_STEPS_URL = 'https://taplink.cc/annabauer/p/11b1d26/';
 function setupSmartButton(percentsByCat, overall){
-  const btn = document.getElementById("smart-btn");
+  const btn = document.getElementById('smart-btn');
   if (!btn) return;
-
-  const items = Object.keys(percentsByCat).map(cat => ({
-    name: cat,
-    percent: percentsByCat[cat]
-  })).sort((a,b)=>a.percent - b.percent);
-
-  const weak = items.filter(i => i.percent <= 53);
-
-  let label = "";
-  let message = "";
-
-  if (!weak.length){
-    label = "Как развиваться дальше?";
-    message =
-      "Ваш профиль сейчас выглядит достаточно сбалансированным. Следующий шаг — работа на опережение: закрепление сильных сторон и точечное развитие отдельных компонентов под ваши спортивные цели.";
-  } else if (weak.length === 1){
-    const w = weak[0];
-    label = "Как улучшить сферу «" + w.name + "»?";
-    message =
-      "Сфера «" + w.name + "» сейчас даёт наибольший вклад в ощущение нестабильности. Фокус на этой области поможет быстрее почувствовать изменения в общем состоянии и результатах.";
-  } else if (weak.length === 2){
-    const names = weak.map(w => "«" + w.name + "»").join(" и ");
-    label = "Как усилить ключевые зоны?";
-    message =
-      "Больше всего внимания сейчас требуют " + names + ". Работа с этими компонентами поможет выровнять профиль и снизить влияние слабых мест на общий результат.";
-  } else {
-    label = "Что делать дальше?";
-    const topNames = weak.slice(0,3).map(w => "• " + w.name + " (" + w.percent + "%)").join("\n");
-    message =
-      "У вас есть несколько зон, которые заметно снижают общий уровень психологической готовности. В первую очередь стоит обратить внимание на:\n\n" + topNames + "\n\nПоследовательная работа с этими сферами поможет сделать состояние более устойчивым.";
-  }
-
-  btn.textContent = label;
+  btn.textContent = 'Что делать дальше?';
   btn.onclick = function(){
-    alert(message);
+    const newTab = window.open(NEXT_STEPS_URL, '_blank', 'noopener,noreferrer');
+    if (!newTab) window.location.href = NEXT_STEPS_URL;
   };
 }
 
@@ -515,7 +488,37 @@ function shareResults(){
 
 // ===== PDF: точная копия отображаемых результатов =====
 // Данные не пересчитываются: берём готовые тексты, проценты и диаграмму из экрана.
+// Safari на iPad: системная печать позволяет сохранить длинный отчёт в PDF
+// без создания одного гигантского canvas (который может превышать лимит памяти).
+function printResultsAsPDF() {
+  const result = document.getElementById('result');
+  if (!result || result.classList.contains('hidden')) {
+    alert('Сначала пройдите тест.');
+    return;
+  }
+  const canvas = document.getElementById('chart');
+  let image = document.getElementById('chart-print-image');
+  if (canvas && !image) {
+    try {
+      image = document.createElement('img');
+      image.id = 'chart-print-image';
+      image.alt = 'Диаграмма спортивного баланса';
+      image.src = canvas.toDataURL('image/png');
+      image.style.display = 'none';
+      canvas.insertAdjacentElement('afterend', image);
+    } catch (error) { console.warn('Не удалось подготовить диаграмму для печати:', error); }
+  }
+  // Print dialog generates a paginated PDF without rendering the entire page to canvas.
+  // On iPad: Share the print preview → Save to Files.
+  requestAnimationFrame(() => window.print());
+}
+
 async function downloadResultsPDF() {
+  // iOS Safari: печать → развёрнутый предпросмотр → Поделиться → Сохранить в Файлы.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) { printResultsAsPDF(); return; }
+
   const source = document.getElementById('result');
   const button = document.getElementById('getPdf');
   if (!source || source.classList.contains('hidden')) {
@@ -564,7 +567,8 @@ async function downloadResultsPDF() {
     }).from(holder).save();
   } catch (error) {
     console.error('Ошибка PDF:', error);
-    alert('Не удалось создать PDF. Попробуйте ещё раз.');
+    alert('Не удалось скачать PDF автоматически. Откроем системное сохранение PDF через печать.');
+    printResultsAsPDF();
   } finally {
     if (holder) holder.remove();
     button.disabled = false;

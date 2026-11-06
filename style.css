@@ -488,3 +488,20 @@ input[type=range]::-webkit-slider-thumb {
 .pdf-export-header { padding: 0 0 24px; break-inside: avoid; }
 .pdf-export-header h1 { font-size: 31px; margin: 0 0 6px; color: #f5f8ff; }
 .pdf-export-header p { font-size: 15px; color: #aabdf5; margin: 0; }
+
+
+/* Системное сохранение PDF на iPad: печатаем только результаты теста. */
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { background: #081123 !important; color: #e5e7eb !important; }
+  body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #app { margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  #app > *:not(#result) { display: none !important; }
+  #result, #result.hidden { display: block !important; visibility: visible !important; }
+  #result .buttons-row, #modal-overlay, #delivery-modal { display: none !important; }
+  #result canvas#chart { display: none !important; }
+  #result #chart-print-image { display: block !important; width: 100% !important; max-width: 580px !important; height: auto !important; margin: 0 auto; }
+  .ios-card, .chart-card, .summary, .scale-card, .glass { break-inside: avoid; page-break-inside: avoid; }
+  .app-card { box-shadow: none !important; backdrop-filter: none !important; }
+  * { animation: none !important; transition: none !important; }
+}
